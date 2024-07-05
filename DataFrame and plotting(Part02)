@@ -1,0 +1,120 @@
+#-------------------------- create dummy data------------------------------------
+# Set the seed for reproducibility
+set.seed(123)
+
+# Generate random values for each field within the specified range
+vegetation_health <- runif(10, min = 0.39, max = 0.85)
+yield <- runif(10, min = 0.9, max = 2.3)
+Tscaler <- runif(10, min = 0.69, max = 0.81)
+WScaler <- runif(10, min = 0.38, max = 0.78)
+
+# Create the dataframe
+df <- data.frame(
+  vegetation_health = vegetation_health,
+  yield = yield,
+  Tscaler = Tscaler,
+  WScaler = WScaler
+)
+
+# Display the dataframe
+print(df)
+
+#-------------------------- graph plot ------------------------------------
+# Plotting the graph with vegetation_health on x-axis and yield on y-axis
+plot(df$vegetation_health, df$yield, 
+     xlab = "Vegetation Health", 
+     ylab = "Yield", 
+     main = "Vegetation Health vs Yield",
+     pch = 19, 
+     col = "blue")
+
+# Adding a trend line to the plot
+abline(lm(df$yield ~ df$vegetation_health), col = "red")
+#___________________________________________________________________________________
+install.packages("ggplot2")
+
+# Load the ggplot2 package
+library(ggplot2)
+
+# Create the correlation graph
+ggplot(df, aes(x = vegetation_health, y = yield)) +
+  geom_point(color = "blue") +                  # Scatter plot points
+  geom_smooth(method = "lm", color = "red") +   # Trend line
+  labs(title = "Correlation between Vegetation Health and Yield",
+       x = "Vegetation Health",
+       y = "Yield") +
+  theme_minimal()            # Minimal theme for cleaner look
+
+#--------------------------Advance Plotting ------------------------------------
+
+# Install and load necessary library
+if (!requireNamespace("scatterplot3d", quietly = TRUE)) {
+  install.packages("scatterplot3d")
+}
+library(scatterplot3d)
+
+# Plot 3D scatter plot
+scatterplot3d(df$Tscaler, df$WScaler, df$vegetation_health,
+              main = "3D Scatter Plot of Tscaler, WScaler, and Vegetation Health",
+              xlab = "Tscaler",
+              ylab = "WScaler",
+              zlab = "Vegetation Health",
+              color = "blue",
+              pch = 19)
+#__________________________ Tile Plot (Using lattice Package):_________________________________________________________
+# Install and load necessary library
+if (!requireNamespace("lattice", quietly = TRUE)) {
+  install.packages("lattice")
+}
+library(lattice)
+
+# Create a data matrix for levelplot
+data_matrix <- with(df, matrix(vegetation_health, nrow = length(unique(Tscaler)), ncol = length(unique(WScaler))))
+
+# Create a tile plot (level plot)
+levelplot(data_matrix,
+          col.regions = colorRampPalette(c("blue", "green", "yellow", "red")),
+          main = "Tile Plot of Vegetation Health",
+          xlab = "Tscaler",
+          ylab = "WScaler")
+
+#__________________________  3D Surface Plot (Using rgl Package): _________________________________________________________
+# Install and load necessary library
+if (!requireNamespace("rgl", quietly = TRUE)) {
+  install.packages("rgl")
+}
+library(rgl)
+
+# Create a 3D surface plot
+plot3d(df$Tscaler, df$WScaler, df$vegetation_health,
+       type = "surface",
+       col = rainbow(100),
+       xlab = "Tscaler",
+       ylab = "WScaler",
+       zlab = "Vegetation Health",
+       main = "3D Surface Plot of Vegetation Health")
+
+#__________________________ 3D Scatter Plot (Using plotly Package): _________________________________________________________
+# Install and load necessary library
+if (!requireNamespace("plotly", quietly = TRUE)) {
+  install.packages("plotly")
+}
+library(plotly)
+
+# Create a 3D scatter plot
+fig <- plot_ly(df, x = ~Tscaler, y = ~WScaler, z = ~vegetation_health, color = ~vegetation_health,
+               type = "scatter3d", mode = "markers", colors = "Blues",
+               marker = list(size = 5))
+
+# Add titles and labels
+fig <- fig %>% layout(title = "3D Scatter Plot of Tscaler, WScaler, and Vegetation Health",
+                      scene = list(xaxis = list(title = "Tscaler"),
+                                   yaxis = list(title = "WScaler"),
+                                   zaxis = list(title = "Vegetation Health")))
+
+# Display the plot
+fig
+
+#__________________________ using lattice _________________________________________________________
+#__________________________ using lattice _________________________________________________________
+#___________________________________________________________________________________

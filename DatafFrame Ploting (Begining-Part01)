@@ -1,0 +1,104 @@
+
+set.seed(123)
+#_________________________ Create data frame ______________________________________________________________
+
+# Generate random values for each field within the specified range
+vegetation_health <- runif(10, min = 0.39, max = 0.85)
+yield <- runif(10, min = 0.9, max = 2.3)
+Tscaler <- runif(10, min = 0.69, max = 0.81)
+WScaler <- runif(10, min = 0.38, max = 0.78)
+
+# Create the dataframe
+df <- data.frame(
+  vegetation_health = vegetation_health,
+  yield = yield,
+  Tscaler = Tscaler,
+  WScaler = WScaler)
+#________________________Line Graph (ggplot2)_______________________________________________________________
+# Install and load necessary library
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+library(ggplot2)
+
+# Create a line graph of vegetation_health over Tscaler
+ggplot(df, aes(x = Tscaler, y = vegetation_health)) +
+  geom_line(color = "blue") +
+  labs(title = "Line Graph of Vegetation Health over Tscaler",
+       x = "Tscaler",
+       y = "Vegetation Health")
+
+#__________________________Bar Graph (ggplot2)_____________________________________________________________
+# Create a bar graph of yield across different categories (e.g., Tscaler)
+ggplot(df, aes(x = factor(Tscaler), y = yield)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Bar Graph of Yield across Tscaler",
+       x = "Tscaler",
+       y = "Yield")
+
+#_________________________Tile Graph (lattice)______________________________________________________________
+# Install and load necessary library
+if (!requireNamespace("lattice", quietly = TRUE)) {
+  install.packages("lattice")
+}
+library(lattice)
+
+# Create a tile plot of vegetation_health against Tscaler and WScaler
+levelplot(vegetation_health ~ Tscaler * WScaler,
+          data = df,
+          main = "Tile Plot of Vegetation Health",
+          xlab = "Tscaler",
+          ylab = "WScaler",
+          col.regions = colorRampPalette(c("blue", "green", "yellow", "red")))
+
+#_____________________________Ridgeline Plot (ggplot2 and ggridges)__________________________________________________________
+# Install and load necessary libraries
+if (!requireNamespace("ggridges", quietly = TRUE)) {
+  install.packages("ggridges")
+}
+library(ggridges)
+
+# Create a ridgeline plot of vegetation_health
+ggplot(df, aes(x = vegetation_health, y = Tscaler, fill = Tscaler)) +
+  geom_density_ridges(scale = 0.7) +
+  labs(title = "Ridgeline Plot of Vegetation Health",
+       x = "Density",
+       y = "Tscaler",
+       fill = "Tscaler")
+
+#_____________________________________Violin Plot (ggplot2)__________________________________________________
+# Create a violin plot of yield across different categories (e.g., Tscaler)
+ggplot(df, aes(x = factor(Tscaler), y = yield, fill = factor(Tscaler))) +
+  geom_violin() +
+  labs(title = "Violin Plot of Yield across Tscaler",
+       x = "Tscaler",
+       y = "Yield")
+
+#___________________________________________Error Bar Graph (ggplot2)____________________________________________
+# Calculate standard errors (assuming hypothetical errors)
+df$error <- runif(10, min = 0.01, max = 0.1)
+
+# Create an error bar graph of vegetation_health with standard errors
+ggplot(df, aes(x = Tscaler, y = vegetation_health)) +
+  geom_errorbar(aes(ymin = vegetation_health - error, ymax = vegetation_health + error),
+                width = 0.2, color = "red") +
+  geom_point(size = 3, color = "blue") +
+  labs(title = "Error Bar Graph of Vegetation Health over Tscaler",
+       x = "Tscaler",
+       y = "Vegetation Health")
+
+#____________________________________________Interactive Plot (plotly)___________________________________________
+# Install and load necessary library
+if (!requireNamespace("plotly", quietly = TRUE)) {
+  install.packages("plotly")
+}
+library(plotly)
+
+# Create an interactive scatter plot of yield against Tscaler
+plot_ly(df, x = ~Tscaler, y = ~yield, color = ~WScaler, type = "scatter", mode = "markers") %>%
+  layout(title = "Interactive Scatter Plot of Yield against Tscaler",
+         xaxis = list(title = "Tscaler"),
+         yaxis = list(title = "Yield"),
+         coloraxis = list(colorscale = "Viridis"))
+
+#_______________________________________________________________________________________

@@ -1,0 +1,37 @@
+# Load necessary libraries
+library(raster)
+library(rgdal)
+
+# Function to read and mosaic all TIFF files in a directory
+
+directory<- "E:/MSc/sourav/"
+
+mosaic_rasters <- function(directory) {
+  # Get a list of all TIFF files in the directory
+  tiff_files <- list.files(directory, pattern = "\\.tif$", full.names = TRUE)
+  
+  # Read each TIFF file and store in a list
+  raster_list <- lapply(tiff_files, raster)
+  
+  # Mosaic all the rasters
+  mosaic_raster <- do.call(mosaic, c(raster_list, fun = mean))
+  
+  return(mosaic_raster)
+}
+
+
+
+
+
+
+# Path to the directory containing the TIFF files
+directory_path <- "E:/MSc/sourav/"
+
+# Read and mosaic all TIFF files
+mosaicked_raster <- mosaic_rasters(directory_path)
+
+# Plot the mosaicked raster
+plot(mosaicked_raster, main = "Mosaicked Raster")
+
+# Save the mosaicked raster
+writeRaster(mosaicked_raster, "path/to/save/mosaicked_raster.tif", format = "GTiff")

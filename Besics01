@@ -1,0 +1,29 @@
+# Load necessary libraries
+library(raster)
+library(rgdal)
+library(sf)
+
+# Read a raster file
+raster_file <- "E:/MSc/Sourav/raster.tif"
+r <- raster(raster_file)
+
+# Read a vector file (shapefile)
+vector_file <- "E:/MSc/Sourav/aoi.shp"
+v <- st_read(vector_file)
+
+# Clip the raster using the vector
+clipped_raster <- mask(r, v)
+
+# Subset one field of the polygon from the shapefile
+# Assuming the field name is "name"
+subset_field <- v["name"]
+
+# Save the clipped raster
+writeRaster(clipped_raster, "E:/MSc/Sourav/clipped_raster.tif")
+
+# Save the subset vector
+st_write(subset_field, "E:/MSc/Sourav/subset_vector.shp")
+
+# Plot to check the results
+plot(clipped_raster, main="Clipped Raster")
+plot(st_geometry(subset_field), add=TRUE, col='red')

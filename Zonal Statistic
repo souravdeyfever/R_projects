@@ -1,0 +1,84 @@
+#--------------------------Basic Zonal Statistics------------------------------------
+#___________________________________________________________________________________
+# Load necessary libraries
+library(raster)
+library(rgdal)
+
+# Load a raster and a shapefile
+raster_path <- "path/to/your/raster.tif"
+zones_path <- "path/to/your/zones.shp"
+
+raster_data <- raster(raster_path)
+zones <- shapefile(zones_path)
+
+# Compute mean of each zone
+zonal_stats <- zonal(raster_data, zones, fun = mean)
+
+# Print zonal statistics
+print(zonal_stats)
+
+#--------------------------Advanced Zonal Statistics------------------------------------
+#___________________________________________________________________________________
+# Load necessary libraries
+library(raster)
+library(rgdal)
+
+# Load a raster and a shapefile
+raster_path <- "path/to/your/raster.tif"
+zones_path <- "path/to/your/zones.shp"
+
+raster_data <- raster(raster_path)
+zones <- shapefile(zones_path)
+
+# Extract values by zones
+extracted_values <- extract(raster_data, zones)
+
+# Compute advanced statistics for each zone
+advanced_stats <- lapply(extracted_values, function(values) {
+  list(
+    mean = mean(values, na.rm = TRUE),
+    median = median(values, na.rm = TRUE),
+    sd = sd(values, na.rm = TRUE),
+    skewness = e1071::skewness(values, na.rm = TRUE)
+  )
+})
+
+# Print advanced statistics
+print(advanced_stats)
+
+
+#--------------------------Advance Zonal Statistics using Loop------------------------------------
+#___________________________________________________________________________________
+# Load necessary libraries
+library(raster)
+library(rgdal)
+
+# Load a raster and a shapefile
+raster_path <- "path/to/your/raster.tif"
+zones_path <- "path/to/your/zones.shp"
+
+raster_data <- raster(raster_path)
+zones <- shapefile(zones_path)
+
+# List of statistics functions
+stats_functions <- list(
+  mean = mean,
+  median = median,
+  sd = sd,
+  sum = sum,
+  min = min,
+  max = max
+)
+
+# Initialize a list to store results
+results <- list()
+
+# Loop through statistics functions and compute for each zone
+for (stat_name in names(stats_functions)) {
+  results[[stat_name]] <- zonal(raster_data, zones, fun = stats_functions[[stat_name]])
+}
+
+# Print results
+print(results)
+
+#___________________________________________________________________________________

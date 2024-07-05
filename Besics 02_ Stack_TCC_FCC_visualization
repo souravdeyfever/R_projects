@@ -1,0 +1,48 @@
+# Load necessary libraries
+library(raster)
+library(rgdal)
+
+# Function to read and stack all bands from a raster file
+read_and_stack_raster <- function(file_path) {
+  raster_layers <- list()
+  
+  # Identify the number of bands in the raster file
+  num_bands <- nlayers(stack(file_path))
+  
+  # Read and store each band in a list
+  for (i in 1:num_bands) {
+    raster_layers[[i]] <- raster(file_path, band = i)
+  }
+  
+  # Stack all the bands together
+  raster_stack <- stack(raster_layers)
+  return(raster_stack)
+}
+
+# Path to the multi-band raster file
+raster_file <- "path/to/your/multiband_raster.tif"
+
+# Read and stack all bands
+raster_stack <- read_and_stack_raster(raster_file)
+
+# Plot RGB compositions
+# True Color (assuming bands 1, 2, 3 correspond to R, G, B respectively)
+plotRGB(raster_stack, r = 1, g = 2, b = 3, main = "True Color Composition")
+
+# False Color (assuming bands 4, 3, 2 correspond to NIR, R, G respectively, common for vegetation)
+plotRGB(raster_stack, r = 4, g = 3, b = 2, main = "False Color Composition")
+
+# Plot to check the results
+plot(raster_stack, main = "All Bands Stacked")
+
+# Save the RGB compositions as images
+writeRaster(raster_stack, "path/to/save/staked_raster.tif")
+
+# If you want to save the RGB composition
+jpeg("TrueColor.jpg")
+plotRGB(raster_stack, r = 1, g = 2, b = 3, main = "True Color Composition")
+dev.off()
+
+jpeg("FalseColor.jpg")
+plotRGB(raster_stack, r = 4, g = 3, b = 2, main = "False Color Composition")
+dev.off()
